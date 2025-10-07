@@ -4,7 +4,7 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-vl&hn^te^i-m=nn*8cw6412=*$u)!3+^qd)s1d3x=as+j&e0&2'
-DEBUG = True
+DEBUG = false
 ALLOWED_HOSTS = ['127.0.0.1', '.pythonanywhere.com']
 
 # Application definition
