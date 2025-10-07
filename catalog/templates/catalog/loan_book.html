@@ -1,0 +1,17 @@
+{% extends "catalog/base.html" %}
+{% block content %}
+<h2>Loan Book: {{ book_instance.book.title }}</h2>
+
+<form method="POST">
+  {% csrf_token %}
+  <div class="mb-3">
+    <label for="borrower" class="form-label">Select Borrower:</label>
+    <select name="borrower" class="form-select">
+      {% for user in users %}
+        <option value="{{ user.id }}">{{ user.username }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <button type="submit" class="btn btn-success">Loan Book</button>
+</form>
+{% endblock %}

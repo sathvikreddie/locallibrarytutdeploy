@@ -1,0 +1,13 @@
+{% extends "catalog/base.html" %}
+{% block content %}
+  <h2>My Borrowed Books</h2>
+  <ul>
+    {% for bookinst in bookinstance_list %}
+      <li>
+        {{ bookinst.book.title }} (Due: {{ bookinst.due_back }})
+      </li>
+    {% empty %}
+      <li>You have no borrowed books.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

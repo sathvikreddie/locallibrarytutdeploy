@@ -1,0 +1,17 @@
+{% extends "catalog/base.html" %}
+{% block content %}
+<h1>Available Books</h1>
+
+{% if available_books %}
+<ul class="list-group">
+  {% for bookinst in available_books %}
+    <li class="list-group-item">
+      <strong>{{ bookinst.book.title }}</strong> — {{ bookinst.imprint }}
+      <a href="{% url 'loan_book' bookinst.pk %}" class="btn btn-sm btn-outline-primary float-end">Loan</a>
+    </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>No books are currently available.</p>
+{% endif %}
+{% endblock %}

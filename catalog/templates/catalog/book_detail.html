@@ -1,0 +1,36 @@
+{% extends "catalog/base.html" %}
+
+{% block content %}
+  <h1>Title: {{ book.title }}</h1>
+
+  {% if book.book_image %}
+    <img src="{{ book.book_image.url }}" alt="{{ book.title }}" class="img-thumbnail mb-3" style="max-height:300px;">
+  {% endif %}
+
+  <p><strong>Author:</strong> {{ book.author }}</p>
+  <p><strong>Summary:</strong> {{ book.summary }}</p>
+  <p><strong>ISBN:</strong> {{ book.isbn }}</p>
+  <p><strong>Genre:</strong> {{ book.genre.all|join:", " }}</p>
+
+  {% if user.is_staff %}
+    <div class="mb-3">
+      <a href="{% url 'book_update' book.id %}" class="btn btn-warning me-2">Edit Book</a>
+      <a href="{% url 'book_delete' book.id %}" class="btn btn-danger">Delete Book</a>
+    </div>
+  {% endif %}
+
+  <div style="margin-left:20px;margin-top:20px">
+    <h4>Copies</h4>
+    {% for copy in book.bookinstance_set.all %}
+      <hr>
+      <p class="{% if copy.status == 'a' %}text-success{% elif copy.status == 'm' %}text-danger{% else %}text-warning{% endif %}">
+        {{ copy.get_status_display }}
+      </p>
+      {% if copy.status != 'a' %}
+        <p><strong>Due to be returned:</strong> {{ copy.due_back }}</p>
+      {% endif %}
+      <p><strong>Imprint:</strong> {{ copy.imprint }}</p>
+      <p class="text-muted"><strong>Id:</strong> {{ copy.id }}</p>
+    {% endfor %}
+  </div>
+{% endblock %}
