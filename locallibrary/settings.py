@@ -19,9 +19,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'catalog.apps.CatalogConfig',
 
-    # Crispy Forms
-    'crispy_forms',
-    'crispy_bootstrap5',
 ]
 
 MIDDLEWARE = [
@@ -83,9 +80,6 @@ STATICFILES_DIRS = [BASE_DIR / 'static']  # For local dev
 STATIC_ROOT = BASE_DIR / 'staticfiles'    # For collectstatic on PythonAnywhere
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# Crispy Forms
-CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
-CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 # Login and Logout Redirects
 LOGIN_REDIRECT_URL = '/'
