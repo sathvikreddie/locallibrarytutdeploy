@@ -6,12 +6,13 @@
   {% csrf_token %}
   <div class="mb-3">
     <label for="borrower" class="form-label">Select Borrower:</label>
-    <select name="borrower" class="form-select">
+    <select name="borrower" class="form-select" required>
       {% for user in users %}
         <option value="{{ user.id }}">{{ user.username }}</option>
       {% endfor %}
     </select>
   </div>
   <button type="submit" class="btn btn-success">Loan Book</button>
+  <a href="{% url 'available_books' %}" class="btn btn-secondary mt-2">Back</a>
 </form>
 {% endblock %}

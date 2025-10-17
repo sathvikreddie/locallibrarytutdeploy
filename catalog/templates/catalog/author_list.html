@@ -1,19 +1,36 @@
 {% extends "catalog/base.html" %}
 
 {% block content %}
+<div class="container mt-4">
   <h1>Author List</h1>
+
   {% if author_list %}
-    <ul>
+    <div class="list-group">
       {% for author in author_list %}
-        <li>
-          <a href="{{ author.get_absolute_url }}">
-            {{ author.first_name }} {{ author.last_name }}
-          </a>
-          ({{ author.date_of_birth }}{% if author.date_of_death %} – {{ author.date_of_death }}{% endif %})
-        </li>
+        <div class="list-group-item d-flex align-items-center justify-content-between">
+          <div class="d-flex align-items-center">
+            {% if author.author_image %}
+              <img src="{{ author.author_image.url }}" alt="{{ author }}" class="img-thumbnail me-3" style="height:80px; width:auto;">
+            {% endif %}
+            <div>
+              <a href="{{ author.get_absolute_url }}" class="h5 mb-0">{{ author.first_name }} {{ author.last_name }}</a>
+              <p class="mb-0 text-muted">
+                {{ author.date_of_birth }}{% if author.date_of_death %} – {{ author.date_of_death }}{% endif %}
+              </p>
+            </div>
+          </div>
+
+          {% if user.is_staff %}
+            <div class="btn-group">
+              <a href="{% url 'author_update' author.id %}" class="btn btn-sm btn-warning">Edit</a>
+              <a href="{% url 'author_delete' author.id %}" class="btn btn-sm btn-danger">Delete</a>
+            </div>
+          {% endif %}
+        </div>
       {% endfor %}
-    </ul>
+    </div>
   {% else %}
     <p>No authors available.</p>
   {% endif %}
+</div>
 {% endblock %}

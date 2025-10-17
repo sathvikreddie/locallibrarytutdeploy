@@ -1,26 +1,39 @@
 {% extends "catalog/base.html" %}
 
 {% block content %}
-  <h1>{{ author.first_name }} {{ author.last_name }}</h1>
+  <div class="container mt-4">
+    <h1>{{ author.first_name }} {{ author.last_name }}</h1>
 
-  {% if author.author_image %}
-    <img src="{{ author.author_image.url }}" alt="{{ author }}" class="img-thumbnail mb-3" style="max-height:300px;">
-  {% endif %}
+    {% if author.author_image %}
+      <img src="{{ author.author_image.url }}" alt="{{ author }}" class="img-thumbnail mb-3" style="max-height:300px;">
+    {% else %}
+      <p class="text-muted">No author image available.</p>
+    {% endif %}
 
-  <p><strong>Date of birth:</strong> {{ author.date_of_birth }}</p>
-  {% if author.date_of_death %}
-    <p><strong>Date of death:</strong> {{ author.date_of_death }}</p>
-  {% endif %}
+    <p><strong>Date of birth:</strong> {{ author.date_of_birth }}</p>
+    {% if author.date_of_death %}
+      <p><strong>Date of death:</strong> {{ author.date_of_death }}</p>
+    {% endif %}
 
-  <h3>Books</h3>
-  <ul>
-    {% for book in author.book_set.all %}
-      <li>
-        <a href="{{ book.get_absolute_url }}">{{ book.title }}</a>
-        ({{ book.genre.all|join:", " }})
-      </li>
-    {% empty %}
-      <li>No books by this author.</li>
-    {% endfor %}
-  </ul>
+    {% if user.is_staff %}
+      <div class="my-3">
+        <a href="{% url 'author_update' author.id %}" class="btn btn-warning me-2">Edit Author</a>
+        <a href="{% url 'author_delete' author.id %}" class="btn btn-danger">Delete Author</a>
+      </div>
+    {% endif %}
+
+    <h3>Books by {{ author.first_name }}</h3>
+    <ul>
+      {% for book in author.book_set.all %}
+        <li>
+          <a href="{{ book.get_absolute_url }}">{{ book.title }}</a>
+          {% if book.genre.all %}
+            ({{ book.genre.all|join:", " }})
+          {% endif %}
+        </li>
+      {% empty %}
+        <li>No books by this author.</li>
+      {% endfor %}
+    </ul>
+  </div>
 {% endblock %}

@@ -1,5 +1,6 @@
 {% extends "catalog/base.html" %}
 {% block content %}
-  <h2>You’ve been logged out.</h2>
-  <p><a href="{% url 'login' %}">Log in again</a> or <a href="{% url 'index' %}">return to homepage</a>.</p>
+<h2>Logged Out</h2>
+<p>You have successfully logged out.</p>
+<a href="{% url 'login' %}" class="btn btn-primary">Login Again</a>
 {% endblock %}

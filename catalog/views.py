@@ -1,18 +1,42 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
-from .models import Book, Author
-from .models import Book, Author, BookInstance
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login
+from django.contrib.auth.models import User
+from .models import Book, Author, BookInstance
 
-
-
-# ✅ Homepage view
+# =======================
+# Home Page
+# =======================
 def index(request):
-    return render(request, 'catalog/index.html')
+    """View function for home page of site."""
+    # Count objects
+    num_books = Book.objects.count()
+    num_instances = BookInstance.objects.count()
+    num_instances_available = BookInstance.objects.filter(status__exact='a').count()
+    num_authors = Author.objects.count()
 
-# ✅ Book views
+    # Track visits in the session
+    num_visits = request.session.get('num_visits', 0)
+    request.session['num_visits'] = num_visits + 1
+
+    context = {
+        'num_books': num_books,
+        'num_instances': num_instances,
+        'num_instances_available': num_instances_available,
+        'num_authors': num_authors,
+        'num_visits': num_visits + 1,
+    }
+
+    return render(request, 'catalog/index.html', context)
+
+# =======================
+# Book Views
+# =======================
 class BookListView(ListView):
     model = Book
     template_name = 'catalog/book_list.html'
@@ -36,7 +60,9 @@ class BookDelete(DeleteView):
     template_name = 'catalog/book_confirm_delete.html'
     success_url = reverse_lazy('book_list')
 
-# ✅ Author views
+# =======================
+# Author Views
+# =======================
 class AuthorListView(ListView):
     model = Author
     template_name = 'catalog/author_list.html'
@@ -60,21 +86,9 @@ class AuthorDelete(DeleteView):
     template_name = 'catalog/author_confirm_delete.html'
     success_url = reverse_lazy('author_list')
 
-    from django.contrib.auth.mixins import LoginRequiredMixin
-    from .models import BookInstance
-
-    # ✅ Borrowed books by current user
-    class LoanedBooksByUserListView(LoginRequiredMixin, ListView):
-        model = BookInstance
-        template_name = 'catalog/bookinstance_list_borrowed_user.html'
-        paginate_by = 10
-
-        def get_queryset(self):
-            return BookInstance.objects.filter(
-                borrower=self.request.user,
-                status__exact='o'
-            ).order_by('due_back')
-
+# =======================
+# Borrowed Books by Current User
+# =======================
 class LoanedBooksByUserListView(LoginRequiredMixin, ListView):
     model = BookInstance
     template_name = 'catalog/bookinstance_list_borrowed_user.html'
@@ -86,40 +100,47 @@ class LoanedBooksByUserListView(LoginRequiredMixin, ListView):
             status__exact='o'
         ).order_by('due_back')
 
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
-from .models import BookInstance
-
+# =======================
+# Available Books & Loaning
+# =======================
 @login_required
 def available_books(request):
     available = BookInstance.objects.filter(status__exact='a')
     return render(request, 'catalog/available_books.html', {'available_books': available})
 
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, redirect
-from .models import BookInstance
+def staff_required(user):
+    return user.is_staff
 
 @login_required
+@user_passes_test(staff_required)
 def loan_book(request, pk):
     book_instance = get_object_or_404(BookInstance, pk=pk)
+    users = User.objects.all()
 
-    if book_instance.status == 'a':
-        book_instance.status = 'o'
-        book_instance.borrower = request.user
-        book_instance.save()
+    if request.method == 'POST':
+        borrower_id = request.POST.get('borrower')
+        borrower = get_object_or_404(User, pk=borrower_id)
 
-    return redirect('book_detail', pk=book_instance.book.pk)
+        if book_instance.status == 'a':
+            book_instance.status = 'o'
+            book_instance.borrower = borrower
+            book_instance.save()
+            return redirect('available_books')
 
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth import login
-from django.shortcuts import render, redirect
+    return render(request, 'catalog/loan_book.html', {
+        'book_instance': book_instance,
+        'users': users
+    })
 
+# =======================
+# User Registration
+# =======================
 def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user)  # Optional: log in after registration
+            login(request, user)
             return redirect('index')
     else:
         form = UserCreationForm()

@@ -7,7 +7,9 @@
   {% for bookinst in available_books %}
     <li class="list-group-item">
       <strong>{{ bookinst.book.title }}</strong> — {{ bookinst.imprint }}
+      {% if user.is_staff %}
       <a href="{% url 'loan_book' bookinst.pk %}" class="btn btn-sm btn-outline-primary float-end">Loan</a>
+      {% endif %}
     </li>
   {% endfor %}
 </ul>
