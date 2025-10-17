@@ -5,7 +5,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-vl&hn^te^i-m=nn*8cw6412=*$u)!3+^qd)s1d3x=as+j&e0&2'
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', '.pythonanywhere.com']
 
@@ -18,7 +18,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'catalog.apps.CatalogConfig',
-
+    'crispy_forms',
+    'crispy_bootstrap5',
 ]
 
 MIDDLEWARE = [
@@ -79,6 +80,10 @@ MEDIA_URL = '/media/'
 STATICFILES_DIRS = [BASE_DIR / 'static']  # For local dev
 STATIC_ROOT = BASE_DIR / 'staticfiles'    # For collectstatic on PythonAnywhere
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# Crispy Forms
+CRISPY_ALLOWED_TEMPLATE_PACKS = ["bootstrap5"]
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 
 # Login and Logout Redirects
