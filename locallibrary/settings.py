@@ -18,8 +18,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'catalog.apps.CatalogConfig',
-    'crispy_forms',
-    'crispy_bootstrap5',
+    #'crispy_forms',
+    #'crispy_bootstrap5',
 ]
 
 MIDDLEWARE = [
@@ -82,8 +82,8 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'    # For collectstatic on PythonAnywhere
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # Crispy Forms
-CRISPY_ALLOWED_TEMPLATE_PACKS = ["bootstrap5"]
-CRISPY_TEMPLATE_PACK = "bootstrap5"
+#CRISPY_ALLOWED_TEMPLATE_PACKS = ["bootstrap5"]
+#CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 
 # Login and Logout Redirects
